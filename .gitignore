@@ -1,0 +1,11 @@
+.DS_Store
+.idea/
+env/
+venv
+__pycache__
+.python/
+**/.DS_Store
+artifacts
+allure-report*/
+allure-results*/
+*.log
