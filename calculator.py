@@ -2,7 +2,10 @@ import re
 
 def sum_number(first_number, second_number = None):
     if hasattr(first_number, '__iter__'):
-        return sum([i for i in first_number])
+        iter_sum = 0
+        for i in first_number:
+            iter_sum += i
+        return iter_sum
     else:
         return first_number + second_number
 
@@ -35,7 +38,13 @@ def arguments_operation(math_expression):
     operation = arguments.group(2)
     return float(first_number), float(second_number), operation
 
-if __name__ == '__main__':
+def calculate_user_input():
     math_expression = enter_math_expression()
     first_number, second_number, operation = arguments_operation(math_expression)
-    result = operation_list[operation](first_number, second_number)
+    return operation_list[operation](first_number, second_number)
+
+if __name__ == '__main__':
+    result = calculate_user_input()
+    print(result)
+    first_number = sum_number([33, 4, 66])
+    print(first_number)
