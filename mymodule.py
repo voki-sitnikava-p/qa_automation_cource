@@ -1,6 +1,52 @@
 import re
 import pickle
+import time
+from contextlib import contextmanager
+import sys
+
+sys.setrecursionlimit(4000)
+
+def initialization_cache(number):
+    for i in range(number + 1):
+        res = BasicCalc.factorial(i)
+        yield
+    print('Инициализация изначальных значений для кэша факториалов завершена')
+
+def cache_for_factorial(func):
+    try:
+        with open('cache_factorial.pkl', 'rb') as file:
+            cache_factorial = pickle.load(file)
+    except FileNotFoundError:
+        cache_factorial = dict()
+
+    def wrapper(number):
+        if number in cache_factorial:
+            return cache_factorial[number]
+        else:
+            result = func(number)
+            cache_factorial[number] = result
+            with open('cache_factorial.pkl', 'wb') as file:
+                pickle.dump(cache_factorial, file)
+            with open('cache_factorial.txt', 'w') as file:
+                file.write(str(cache_factorial))
+            return result
+    return wrapper
+
 class BasicCalc:
+
+    @cache_for_factorial
+    def factorial(number):
+        if number == 0:
+            return 1
+        else:
+            return number * BasicCalc.factorial(number - 1)
+
+    @contextmanager
+    def timer():
+        start = time.time()
+        yield
+        end = time.time()
+        print(f"Время выполнения: {end - start:.6f} секунд")
 
     @staticmethod
     def sum_number(first_number, operation, second_number=None):
@@ -113,6 +159,7 @@ BasicCalc.operation_list = {'+': BasicCalc.sum_number,
                       }
 
 BasicCalc.log = dict()
+
 
 class New_calc(BasicCalc):
 
