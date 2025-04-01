@@ -10,5 +10,3 @@ from mymodule import New_calc
 if __name__ == '__main__':
    result = New_calc.calculate_user_input()
    print(result)
-first_number = 4
-second_number = 2

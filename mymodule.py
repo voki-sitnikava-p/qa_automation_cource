@@ -10,39 +10,31 @@ class BasicCalc:
                 iter_sum += i
             return iter_sum
         else:
-            if not isinstance(first_number, (int, float)):
-                first_number = 0
-            if not isinstance(second_number, (int, float)):
-                second_number = 0
+            first_number = first_number if isinstance(first_number, (int, float)) else 0
+            second_number = second_number if isinstance(second_number, (int, float)) else 0
             return first_number + second_number
 
     @staticmethod
     def subtraction_number(first_number, second_number):
-        if not isinstance(first_number, (int, float)):
-            first_number = 0
-        if not isinstance(second_number, (int, float)):
-            second_number = 0
+        first_number = first_number if isinstance(first_number, (int, float)) else 0
+        second_number = second_number if isinstance(second_number, (int, float)) else 0
         return first_number - second_number
 
     @staticmethod
     def division_number(first_number, second_number):
-        if not isinstance(first_number, (int, float)):
-            first_number = 0
-        if not isinstance(second_number, (int, float)):
-            second_number = 0
+        first_number = first_number if isinstance(first_number, (int, float)) else 0
         try:
             result = first_number / second_number
-        except ZeroDivisionError:
+        except (ZeroDivisionError, TypeError):
             print('You can"t divide by 0')
         else:
             return result
 
+
     @staticmethod
     def multiplication_number(first_number, second_number):
-        if not isinstance(first_number, (int, float)):
-            first_number = 0
-        if not isinstance(second_number, (int, float)):
-            second_number = 0
+        first_number = first_number if isinstance(first_number, (int, float)) else 0
+        second_number = second_number if isinstance(second_number, (int, float)) else 0
         return first_number * second_number
 
     @staticmethod
