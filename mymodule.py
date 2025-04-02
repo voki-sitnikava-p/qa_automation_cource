@@ -1,28 +1,40 @@
 import re
-import os
 
 class BasicCalc:
 
     @staticmethod
     def sum_number(first_number, second_number=None):
-        if hasattr(first_number, '__iter__'):
+        if isinstance(first_number, (list, tuple, set)):
             iter_sum = 0
             for i in first_number:
                 iter_sum += i
             return iter_sum
         else:
+            first_number = first_number if isinstance(first_number, (int, float)) else 0
+            second_number = second_number if isinstance(second_number, (int, float)) else 0
             return first_number + second_number
 
     @staticmethod
     def subtraction_number(first_number, second_number):
+        first_number = first_number if isinstance(first_number, (int, float)) else 0
+        second_number = second_number if isinstance(second_number, (int, float)) else 0
         return first_number - second_number
 
     @staticmethod
     def division_number(first_number, second_number):
-        return first_number / second_number
+        first_number = first_number if isinstance(first_number, (int, float)) else 0
+        try:
+            result = first_number / second_number
+        except (ZeroDivisionError, TypeError):
+            print('You can"t divide by 0')
+        else:
+            return result
+
 
     @staticmethod
     def multiplication_number(first_number, second_number):
+        first_number = first_number if isinstance(first_number, (int, float)) else 0
+        second_number = second_number if isinstance(second_number, (int, float)) else 0
         return first_number * second_number
 
     @staticmethod
@@ -35,11 +47,19 @@ class BasicCalc:
 
     @staticmethod
     def arguments_operation(math_expression):
-        arguments = re.match(r'((?:\d+(?:\.\d*)?|\.\d+))([-+/*])((?:\d+(?:\.\d*)?|\.\d+))', math_expression)
-        first_number = arguments.group(1)
-        second_number = arguments.group(3)
-        operation = arguments.group(2)
-        return float(first_number), float(second_number), operation
+        try:
+            arguments = re.match(r'((?:\d+(?:\.\d*)?|\.\d+))([-+/*])((?:\d+(?:\.\d*)?|\.\d+))', math_expression)
+            first_number = arguments.group(1)
+            second_number = arguments.group(3)
+            operation = arguments.group(2)
+        except AttributeError:
+            print('The mathematical expression entered is incorrect')
+            return None, None, None
+        except TypeError:
+            print('The mathematical expression entered is incorrect')
+            return None, None, None
+        else:
+            return float(first_number), float(second_number), operation
 
     @staticmethod
     def calculate_user_input():
@@ -60,27 +80,33 @@ class New_calc(BasicCalc):
 
     @staticmethod
     def memory():
-        if os.path.exists('memory.txt'):
+        try:
             with open('memory.txt', 'r') as file:
                 return file.read().split()
-        else:
+        except FileNotFoundError:
             return list()
 
     @staticmethod
     def memo_minus(stack):
-        return stack.pop()
+        if isinstance(stack, list):
+            return stack.pop()
+        else:
+            print('stack must be a list')
 
     @staticmethod
     def memo_plus(result):
         stack = New_calc.memory()
-        if len(stack) == 3:
-            New_calc.memo_minus(stack)
-            stack.append(result)
+        if isinstance(result, (int, float)):
+            if len(stack) == 3:
+                New_calc.memo_minus(stack)
+                stack.append(result)
+            else:
+                stack.append(result)
+            str_stack = [str(num) for num in stack]
+            with open('memory.txt', 'w') as file:
+                file.write(' '.join(str_stack))
         else:
-            stack.append(result)
-        str_stack = [str(num) for num in stack]
-        with open('memory.txt', 'w') as file:
-            file.write(' '.join(str_stack))
+            print('result must be a number')
 
     @staticmethod
     def number_from_member():
@@ -94,16 +120,24 @@ class New_calc(BasicCalc):
         math_expression = input('Enter number and operation: ')
         pattern = r'(?:\d+(?:\.\d*)?|\.\d+)[-+/*]'
         while re.fullmatch(pattern, math_expression) == None:
-            math_expression = input('Number and operation entered is incorrect.\nPlease re-enter it: ')
+            math_expression = input('Number or operation entered is incorrect.\nPlease re-enter it: ')
         return math_expression
 
     @staticmethod
     def arguments_operation(math_expression):
-        arguments = re.match(r'((?:\d+(?:\.\d*)?|\.\d+))([-+/*])', math_expression)
-        first_number = arguments.group(1)
-        second_number = New_calc.number_from_member()
-        operation = arguments.group(2)
-        return float(first_number), float(second_number), operation
+        try:
+            arguments = re.match(r'((?:\d+(?:\.\d*)?|\.\d+))([-+/*])', math_expression)
+            first_number = arguments.group(1)
+            second_number = New_calc.number_from_member()
+            operation = arguments.group(2)
+        except AttributeError:
+            print('Number or operation entered is incorrect')
+            return None, None, None
+        except TypeError:
+            print('The mathematical expression entered is incorrect')
+            return None, None, None
+        else:
+            return float(first_number), float(second_number), operation
 
     @staticmethod
     def calculate_user_input():
