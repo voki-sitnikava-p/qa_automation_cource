@@ -3,6 +3,10 @@ import pickle
 import time
 from contextlib import contextmanager
 import sys
+from math import factorial
+import datetime
+from random import randint
+from collections import Counter
 
 sys.setrecursionlimit(4000)
 
@@ -43,12 +47,23 @@ class BasicCalc:
         else:
             return number * BasicCalc.factorial(number - 1)
 
+    def factorial_from_math(number):
+        return factorial(number)
+
     @contextmanager
     def timer():
         start = time.time()
         yield
         end = time.time()
         print(f"Время выполнения: {end - start:.6f} секунд")
+
+    def count_random_numbers():
+        random_numbers = [randint(0, 50) for i in range(50)]
+        distribution_numbers = Counter(random_numbers)
+        print('Распределение для генерации случайных целых чисел:')
+        for num in sorted(distribution_numbers):
+            print(f'число {num}: {distribution_numbers[num]}')
+
 
     @staticmethod
     def argument_checking(first_number, second_number):
@@ -142,7 +157,7 @@ class BasicCalc:
     @staticmethod
     def log_information(first_number, operation, second_number, result):
         BasicCalc.log.update({"first_argument": first_number, "second_argument": second_number, "operation": operation,
-                              "result": result})
+                              "result": result, "date_log": str(datetime.datetime.now())})
         with open('log.txt', 'w') as file:
             file.write(str(BasicCalc.log))
         # with open('log.txt', 'wb') as file:
@@ -223,10 +238,16 @@ class New_calc(BasicCalc):
 #Ниже проверки работы калькулятора
 
 if __name__ == '__main__':
-   result = New_calc.calculate_user_input()
-   print(result)
-   # first_number = 11
-   # second_number = 5
-   # operation = '+'
-   # res = BasicCalc.division_number(first_number, operation, second_number)
-   # print(res)
+    BasicCalc.count_random_numbers() #Проверка распределения для генерации случайных целых чисел
+    result = New_calc.calculate_user_input() #Выполнение NewCalc, проверка записи времени в лог
+    # with BasicCalc.timer():
+    #    for i in initialization_cache(200):  # Выполняем инициализацию изначальных значений для кэша факториалов
+    #        pass
+    with BasicCalc.timer():  # Выполняем рассчет факториала
+       number = 600
+       result = BasicCalc.factorial(number)
+       print(result)
+    with BasicCalc.timer():  # Выполняем рассчет факториала с помощью math.factorial()
+       number = 600
+       result = BasicCalc.factorial_from_math(number)
+       print(result)
