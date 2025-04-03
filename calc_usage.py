@@ -34,6 +34,8 @@ def cache_for_factorial(func):
 
 class BasicCalc:
 
+    log = dict()
+
     @cache_for_factorial
     def factorial(number):
         if number == 0:
@@ -49,6 +51,16 @@ class BasicCalc:
         print(f"Время выполнения: {end - start:.6f} секунд")
 
     @staticmethod
+    def argument_checking(first_number, second_number):
+        if not isinstance(first_number, (int, float)):
+            BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
+            first_number = 0
+        if not isinstance(second_number, (int, float)):
+            BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
+            second_number = 0
+        return first_number, second_number
+
+    @staticmethod
     def sum_number(first_number, operation, second_number=None):
         if isinstance(first_number, (list, tuple, set)):
             result = 0
@@ -57,36 +69,21 @@ class BasicCalc:
             BasicCalc.log_information(first_number, operation, second_number, result)
             return result
         else:
-            if not isinstance(first_number, (int, float)):
-                BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
-                first_number = 0
-            if not isinstance(second_number, (int, float)):
-                BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
-                second_number = 0
+            first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
             result = first_number + second_number
             BasicCalc.log_information(first_number, operation, second_number, result)
             return result
 
     @staticmethod
     def subtraction_number(first_number, operation, second_number):
-        if not isinstance(first_number, (int, float)):
-            BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
-            first_number = 0
-        if not isinstance(second_number, (int, float)):
-            BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
-            second_number = 0
+        first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
         result = first_number - second_number
         BasicCalc.log_information(first_number, operation, second_number, result)
         return result
 
     @staticmethod
     def division_number(first_number, operation, second_number):
-        if not isinstance(first_number, (int, float)):
-            BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
-            first_number = 0
-        if not isinstance(second_number, (int, float)):
-            BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
-            second_number = 0
+        first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
         try:
             result = first_number / second_number
         except ZeroDivisionError:
@@ -100,15 +97,16 @@ class BasicCalc:
 
     @staticmethod
     def multiplication_number(first_number, operation, second_number):
-        if not isinstance(first_number, (int, float)):
-            BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
-            first_number = 0
-        if not isinstance(second_number, (int, float)):
-            BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
-            second_number = 0
+        first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
         result = first_number * second_number
         BasicCalc.log_information(first_number, operation, second_number, result)
         return result
+
+    operation_list = {'+': sum_number.__func__,
+                      '-': subtraction_number.__func__,
+                      '*': multiplication_number.__func__,
+                      '/': division_number.__func__
+                      }
 
     @staticmethod
     def enter_math_expression():
@@ -143,22 +141,12 @@ class BasicCalc:
 
     @staticmethod
     def log_information(first_number, operation, second_number, result):
-        BasicCalc.log["first_argument"]= first_number
-        BasicCalc.log["second_argument"] = second_number
-        BasicCalc.log["operation"] = operation
-        BasicCalc.log['result'] = result
+        BasicCalc.log.update({"first_argument": first_number, "second_argument": second_number, "operation": operation,
+                              "result": result})
         with open('log.txt', 'w') as file:
             file.write(str(BasicCalc.log))
         # with open('log.txt', 'wb') as file:
         #     pickle.dump(BasicCalc.log, file)
-
-BasicCalc.operation_list = {'+': BasicCalc.sum_number,
-                      '-': BasicCalc.subtraction_number,
-                      '*': BasicCalc.multiplication_number,
-                      '/': BasicCalc.division_number
-                      }
-
-BasicCalc.log = dict()
 
 
 class New_calc(BasicCalc):
@@ -174,10 +162,8 @@ class New_calc(BasicCalc):
 
     @staticmethod
     def memo_minus(stack):
-        if isinstance(stack, list):
-            return stack.pop()
-        else:
-            print('stack must be a list')
+        stack = New_calc.memory()
+        return stack.pop()
 
     @staticmethod
     def memo_plus(result):
@@ -232,3 +218,15 @@ class New_calc(BasicCalc):
         result = BasicCalc.operation_list[operation](first_number, operation, second_number)
         New_calc.memo_plus(result)
         return result
+
+
+#Ниже проверки работы калькулятора
+
+if __name__ == '__main__':
+   result = New_calc.calculate_user_input()
+   print(result)
+   # first_number = 11
+   # second_number = 5
+   # operation = '+'
+   # res = BasicCalc.division_number(first_number, operation, second_number)
+   # print(res)
