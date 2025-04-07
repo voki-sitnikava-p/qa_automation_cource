@@ -31,8 +31,6 @@ def cache_for_factorial(func):
                 file.write(str(cache_factorial))
             return result
     return wrapper
-========
->>>>>>>> main:mymodule.py
 
 class BasicCalc:
     log = dict()
@@ -50,6 +48,8 @@ class BasicCalc:
         yield
         end = time.time()
         print(f"Время выполнения: {end - start:.6f} секунд")
+
+
     @staticmethod
     def argument_checking(first_number, second_number, operation):
         if not isinstance(first_number, (int, float)):
@@ -226,10 +226,19 @@ class New_calc(BasicCalc):
 #Ниже проверки работы калькулятора
 
 if __name__ == '__main__':
-   result = New_calc.calculate_user_input()
-   print(result)
+   # result = New_calc.calculate_user_input()
+   # print(result)
    # first_number = 'ggf'
    # second_number = '88'
    # operation = '/'
    # res = BasicCalc.division_number(first_number, operation, second_number)
    # print(res)
+
+   with BasicCalc.timer():
+       for i in initialization_cache(200):  # Выполняем инициализацию изначальных значений для кэша факториалов
+           pass
+
+   with BasicCalc.timer():  # Выполняем рассчет факториала
+       number = 200
+       result = BasicCalc.factorial(number)
+   print(result)
