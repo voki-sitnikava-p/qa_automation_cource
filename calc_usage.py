@@ -5,13 +5,17 @@ class BasicCalc:
     log = dict()
 
     @staticmethod
-    def argument_checking(first_number, second_number):
+    def argument_checking(first_number, second_number, operation):
         if not isinstance(first_number, (int, float)):
             BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
             first_number = 0
         if not isinstance(second_number, (int, float)):
-            BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
-            second_number = 0
+            if operation == '/':
+                BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 1'
+                second_number = 1
+            else:
+                BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
+                second_number = 0
         return first_number, second_number
 
     @staticmethod
@@ -23,21 +27,21 @@ class BasicCalc:
             BasicCalc.log_information(first_number, operation, second_number, result)
             return result
         else:
-            first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
+            first_number, second_number = BasicCalc.argument_checking(first_number, second_number, operation)
             result = first_number + second_number
             BasicCalc.log_information(first_number, operation, second_number, result)
             return result
 
     @staticmethod
     def subtraction_number(first_number, operation, second_number):
-        first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
+        first_number, second_number = BasicCalc.argument_checking(first_number, second_number, operation)
         result = first_number - second_number
         BasicCalc.log_information(first_number, operation, second_number, result)
         return result
 
     @staticmethod
     def division_number(first_number, operation, second_number):
-        first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
+        first_number, second_number = BasicCalc.argument_checking(first_number, second_number, operation)
         try:
             result = first_number / second_number
         except ZeroDivisionError:
@@ -51,7 +55,7 @@ class BasicCalc:
 
     @staticmethod
     def multiplication_number(first_number, operation, second_number):
-        first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
+        first_number, second_number = BasicCalc.argument_checking(first_number, second_number, operation)
         result = first_number * second_number
         BasicCalc.log_information(first_number, operation, second_number, result)
         return result
@@ -176,14 +180,10 @@ class New_calc(BasicCalc):
 #Ниже проверки работы калькулятора
 
 if __name__ == '__main__':
-   # result = New_calc.calculate_user_input()
-   # print(result)
-   first_number = 'ggf'
-   second_number = '88'
-   operation = '+'
-   res = BasicCalc.division_number(first_number, operation, second_number)
-   print(res)
-
-
-
-
+   result = New_calc.calculate_user_input()
+   print(result)
+   # first_number = 'ggf'
+   # second_number = '88'
+   # operation = '/'
+   # res = BasicCalc.division_number(first_number, operation, second_number)
+   # print(res)
