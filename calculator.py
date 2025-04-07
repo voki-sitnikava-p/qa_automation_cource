@@ -2,13 +2,11 @@ from mymodule import BasicCalc
 from mymodule import New_calc
 from mymodule import initialization_cache
 
-# if __name__ == '__main__':
+#if __name__ == '__main__':
 #    result = BasicCalc.calculate_user_input()
 #    print(result)
-   # first_number = [33, 4, 66]
-   # operation = '+'
-   # first_number = BasicCalc.sum_number(first_number, operation)
-   # print(first_number)
+#    first_number = BasicCalc.sum_number([33, 4, 66])
+#    print(first_number)
 
 # if __name__ == '__main__':
 #     with BasicCalc.timer():
