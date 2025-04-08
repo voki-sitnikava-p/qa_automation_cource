@@ -6,6 +6,15 @@ import sys
 
 sys.setrecursionlimit(4000)
 
+@contextmanager
+def timer():
+    start = time.time()
+    try:
+        yield
+    finally:
+        end = time.time()
+        print(f"Время выполнения: {end - start:.6f} секунд")
+
 def initialization_cache(number):
     for i in range(number + 1):
         res = BasicCalc.factorial(i)
@@ -27,8 +36,6 @@ def cache_for_factorial(func):
             cache_factorial[number] = result
             with open('cache_factorial.pkl', 'wb') as file:
                 pickle.dump(cache_factorial, file)
-            with open('cache_factorial.txt', 'w') as file:
-                file.write(str(cache_factorial))
             return result
     return wrapper
 
@@ -41,13 +48,6 @@ class BasicCalc:
             return 1
         else:
             return number * BasicCalc.factorial(number - 1)
-
-    @contextmanager
-    def timer():
-        start = time.time()
-        yield
-        end = time.time()
-        print(f"Время выполнения: {end - start:.6f} секунд")
 
 
     @staticmethod
@@ -152,7 +152,7 @@ class BasicCalc:
         #     pickle.dump(BasicCalc.log, file)
 
 
-class New_calc(BasicCalc):
+class NewСalc(BasicCalc):
 
     @staticmethod
     def memory():
@@ -165,15 +165,15 @@ class New_calc(BasicCalc):
 
     @staticmethod
     def memo_minus(stack):
-        stack = New_calc.memory()
+        stack = NewСalc.memory()
         return stack.pop()
 
     @staticmethod
     def memo_plus(result):
-        stack = New_calc.memory()
+        stack = NewСalc.memory()
         if isinstance(result, (int, float)):
             if len(stack) == 3:
-                New_calc.memo_minus(stack)
+                NewСalc.memo_minus(stack)
                 stack.append(result)
             else:
                 stack.append(result)
@@ -185,10 +185,10 @@ class New_calc(BasicCalc):
 
     @staticmethod
     def number_from_member():
-        if len(New_calc.memory()) == 0:
+        if len(NewСalc.memory()) == 0:
             return 0
         else:
-            return New_calc.memory()[-1]
+            return NewСalc.memory()[-1]
 
     @staticmethod
     def enter_math_expression():
@@ -203,7 +203,7 @@ class New_calc(BasicCalc):
         try:
             arguments = re.match(r'((?:\d+(?:\.\d*)?|\.\d+))([-+/*])', math_expression)
             first_number = arguments.group(1)
-            second_number = New_calc.number_from_member()
+            second_number = NewСalc.number_from_member()
             operation = arguments.group(2)
         except AttributeError:
             print('Number or operation entered is incorrect')
@@ -216,9 +216,8 @@ class New_calc(BasicCalc):
 
     @staticmethod
     def calculate_user_input():
-        math_expression = New_calc.enter_math_expression()
-        first_number, operation, second_number = New_calc.arguments_operation(math_expression)
+        math_expression = NewСalc.enter_math_expression()
+        first_number, operation, second_number = NewСalc.arguments_operation(math_expression)
         result = BasicCalc.operation_list[operation](first_number, operation, second_number)
-        New_calc.memo_plus(result)
+        NewСalc.memo_plus(result)
         return result
-
