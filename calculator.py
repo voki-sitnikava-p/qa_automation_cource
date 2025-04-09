@@ -10,6 +10,15 @@ from collections import Counter
 
 sys.setrecursionlimit(4000)
 
+@contextmanager
+def timer():
+    start = time.time()
+    try:
+        yield
+    finally:
+        end = time.time()
+        print(f"Время выполнения: {end - start:.6f} секунд")
+
 def initialization_cache(number):
     for i in range(number + 1):
         res = BasicCalc.factorial(i)
@@ -31,8 +40,6 @@ def cache_for_factorial(func):
             cache_factorial[number] = result
             with open('cache_factorial.pkl', 'wb') as file:
                 pickle.dump(cache_factorial, file)
-            with open('cache_factorial.txt', 'w') as file:
-                file.write(str(cache_factorial))
             return result
     return wrapper
 
@@ -49,13 +56,6 @@ class BasicCalc:
 
     def factorial_from_math(number):
         return factorial(number)
-
-    @contextmanager
-    def timer():
-        start = time.time()
-        yield
-        end = time.time()
-        print(f"Время выполнения: {end - start:.6f} секунд")
 
     def count_random_numbers():
         random_numbers = [randint(0, 50) for i in range(50)]
