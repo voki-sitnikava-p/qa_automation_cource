@@ -7,8 +7,10 @@ from math import factorial
 import datetime
 from random import randint
 from collections import Counter
+from typing import Union
 
-sys.setrecursionlimit(4000)
+sys.setrecursionlimit(2000)
+
 
 @contextmanager
 def timer():
@@ -19,11 +21,13 @@ def timer():
         end = time.time()
         print(f"Время выполнения: {end - start:.6f} секунд")
 
+
 def initialization_cache(number):
     for i in range(number + 1):
-        res = BasicCalc.factorial(i)
+        BasicCalc.factorial(i)
         yield
     print('Инициализация изначальных значений для кэша факториалов завершена')
+
 
 def cache_for_factorial(func):
     try:
@@ -41,37 +45,52 @@ def cache_for_factorial(func):
             with open('cache_factorial.pkl', 'wb') as file:
                 pickle.dump(cache_factorial, file)
             return result
+
     return wrapper
 
-class BasicCalc:
 
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
+
+
+class BasicCalc(metaclass=SingletonMeta):
     log = dict()
 
+    @staticmethod
     @cache_for_factorial
     def factorial(number):
-        if number == 0:
+        if number <= 1:
             return 1
         else:
             return number * BasicCalc.factorial(number - 1)
 
-    def factorial_from_math(number):
+    def factorial_from_math(self, number):
         return factorial(number)
 
-    def count_random_numbers():
+    def count_random_numbers(self):
         random_numbers = [randint(0, 50) for i in range(50)]
         distribution_numbers = Counter(random_numbers)
         print('Распределение для генерации случайных целых чисел:')
         for num in sorted(distribution_numbers):
             print(f'число {num}: {distribution_numbers[num]}')
 
-
     @staticmethod
     def argument_checking(first_number, second_number):
         if not isinstance(first_number, (int, float)):
-            BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
+            BasicCalc.log['first_number_Type_Error'] = (
+                'Invalid format of first number. Number replaced with 0'
+            )
             first_number = 0
         if not isinstance(second_number, (int, float)):
-            BasicCalc.log['second_number_Type_Error'] = 'Invalid format of second number. Number replaced with 0'
+            BasicCalc.log['second_number_Type_Error'] = (
+                'Invalid format of second number. Number replaced with 0'
+            )
             second_number = 0
         return first_number, second_number
 
@@ -81,19 +100,25 @@ class BasicCalc:
             result = 0
             for i in first_number:
                 result += i
-            BasicCalc.log_information(first_number, operation, second_number, result)
+            BasicCalc.log_information(
+                first_number, operation, second_number, result
+            )
             return result
         else:
             first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
             result = first_number + second_number
-            BasicCalc.log_information(first_number, operation, second_number, result)
+            BasicCalc.log_information(
+                first_number, operation, second_number, result
+            )
             return result
 
     @staticmethod
     def subtraction_number(first_number, operation, second_number):
         first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
         result = first_number - second_number
-        BasicCalc.log_information(first_number, operation, second_number, result)
+        BasicCalc.log_information(
+            first_number, operation, second_number, result
+        )
         return result
 
     @staticmethod
@@ -103,18 +128,24 @@ class BasicCalc:
             result = first_number / second_number
         except ZeroDivisionError:
             BasicCalc.log['operation_error'] = 'ZeroDivisionError'
-            print('You can"t divide by 0')
+            print("You can't divide by 0")
             result = None
-            BasicCalc.log_information(first_number, operation, second_number, result)
+            BasicCalc.log_information(
+                first_number, operation, second_number, result
+            )
         else:
-            BasicCalc.log_information(first_number,operation, second_number, result)
+            BasicCalc.log_information(
+                first_number, operation, second_number, result
+            )
             return result
 
     @staticmethod
     def multiplication_number(first_number, operation, second_number):
         first_number, second_number = BasicCalc.argument_checking(first_number, second_number)
         result = first_number * second_number
-        BasicCalc.log_information(first_number, operation, second_number, result)
+        BasicCalc.log_information(
+            first_number, operation, second_number, result
+        )
         return result
 
     operation_list = {'+': sum_number.__func__,
@@ -127,14 +158,16 @@ class BasicCalc:
     def enter_math_expression():
         math_expression = input('Enter a mathematical expression:')
         pattern = r'(?:\d+(?:\.\d*)?|\.\d+)[-+/*](?:\d+(?:\.\d*)?|\.\d+)'
-        while re.fullmatch(pattern, math_expression) == None:
-            math_expression = input('The mathematical expression entered is incorrect.\nPlease re-enter it:')
+        while re.fullmatch(pattern, math_expression) is None:
+            math_expression = input("The mathematical expression entered is incorrect.\n"
+                                    "Please re-enter it:"
+                                    )
         return math_expression
 
     @staticmethod
     def arguments_operation(math_expression):
         try:
-            arguments = re.match(r'((?:\d+(?:\.\d*)?|\.\d+))([-+/*])((?:\d+(?:\.\d*)?|\.\d+))', math_expression)
+            arguments = re.match(r"(\d+(?:\.\d*)?|\.\d+)([-+/*])(\d+(?:\.\d*)?|\.\d+)", math_expression)
             first_number = arguments.group(1)
             second_number = arguments.group(3)
             operation = arguments.group(2)
@@ -156,15 +189,16 @@ class BasicCalc:
 
     @staticmethod
     def log_information(first_number, operation, second_number, result):
-        BasicCalc.log.update({"first_argument": first_number, "second_argument": second_number, "operation": operation,
-                              "result": result, "date_log": str(datetime.datetime.now())})
+        BasicCalc.log.update({"first_argument": first_number, "second_argument": second_number,
+                              "operation": operation, "result": result,
+                              "date_log": str(datetime.datetime.now())})
         with open('log.txt', 'w') as file:
             file.write(str(BasicCalc.log))
         # with open('log.txt', 'wb') as file:
         #     pickle.dump(BasicCalc.log, file)
 
 
-class NewСalc(BasicCalc):
+class NewCalc(BasicCalc):
 
     @staticmethod
     def memory():
@@ -177,15 +211,15 @@ class NewСalc(BasicCalc):
 
     @staticmethod
     def memo_minus(stack):
-        stack = NewСalc.memory()
+        stack = NewCalc.memory()
         return stack.pop()
 
     @staticmethod
     def memo_plus(result):
-        stack = NewСalc.memory()
+        stack = NewCalc.memory()
         if isinstance(result, (int, float)):
             if len(stack) == 3:
-                NewСalc.memo_minus(stack)
+                NewCalc.memo_minus(stack)
                 stack.append(result)
             else:
                 stack.append(result)
@@ -197,28 +231,30 @@ class NewСalc(BasicCalc):
 
     @staticmethod
     def number_from_member():
-        if len(NewСalc.memory()) == 0:
+        if len(NewCalc.memory()) == 0:
             return 0
         else:
-            return NewСalc.memory()[-1]
+            return NewCalc.memory()[-1]
 
     @staticmethod
     def enter_math_expression():
         math_expression = input('Enter number and operation: ')
         pattern = r'(?:\d+(?:\.\d*)?|\.\d+)[-+/*]'
-        while re.fullmatch(pattern, math_expression) == None:
-            math_expression = input('Number or operation entered is incorrect.\nPlease re-enter it: ')
+        while re.fullmatch(pattern, math_expression) is None:
+            math_expression = input('Number or operation entered is incorrect.\n'
+                                    'Please re-enter it: '
+                                    )
         return math_expression
 
     @staticmethod
     def arguments_operation(math_expression):
         try:
-            arguments = re.match(r'((?:\d+(?:\.\d*)?|\.\d+))([-+/*])', math_expression)
+            arguments = re.match(r"(\d+(?:\.\d*)?|\.\d+)([-+/*])", math_expression)
             first_number = arguments.group(1)
-            second_number = NewСalc.number_from_member()
+            second_number = NewCalc.number_from_member()
             operation = arguments.group(2)
         except AttributeError:
-            print('Number or operation entered is incorrect')
+            print("Number or operation entered is incorrect")
             return None, None, None
         except TypeError:
             print('The mathematical expression entered is incorrect')
@@ -228,8 +264,8 @@ class NewСalc(BasicCalc):
 
     @staticmethod
     def calculate_user_input():
-        math_expression = NewСalc.enter_math_expression()
-        first_number, operation, second_number = NewСalc.arguments_operation(math_expression)
+        math_expression = NewCalc.enter_math_expression()
+        first_number, operation, second_number = NewCalc.arguments_operation(math_expression)
         result = BasicCalc.operation_list[operation](first_number, operation, second_number)
-        NewСalc.memo_plus(result)
+        NewCalc.memo_plus(result)
         return result
