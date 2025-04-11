@@ -44,6 +44,8 @@ class BasicCalc:
 
     @cache_for_factorial
     def factorial(number):
+        if number < 0:
+            raise ValueError("Number must be positive")
         if number == 0:
             return 1
         else:
