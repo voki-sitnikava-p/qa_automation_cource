@@ -16,6 +16,8 @@ def timer():
         print(f"Время выполнения: {end - start:.6f} секунд")
 
 def initialization_cache(number):
+    if number < 0:
+        raise ValueError("Number must be positive")
     for i in range(number + 1):
         res = BasicCalc.factorial(i)
         yield
