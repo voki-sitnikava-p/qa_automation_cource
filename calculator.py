@@ -3,7 +3,6 @@ import pickle
 import time
 from contextlib import contextmanager
 import sys
-from math import factorial
 import datetime
 from random import randint
 from collections import Counter
@@ -29,21 +28,21 @@ def initialization_cache(number):
     print('Инициализация изначальных значений для кэша факториалов завершена')
 
 
-def cache_for_factorial(func):
+def cache(func):
     try:
-        with open('cache_factorial.pkl', 'rb') as file:
-            cache_factorial = pickle.load(file)
+        with open('cache.pkl', 'rb') as file:
+            cache = pickle.load(file)
     except FileNotFoundError:
-        cache_factorial = dict()
+        cache = dict()
 
     def wrapper(number):
-        if number in cache_factorial:
-            return cache_factorial[number]
+        if number in cache:
+            return cache[number]
         else:
             result = func(number)
-            cache_factorial[number] = result
-            with open('cache_factorial.pkl', 'wb') as file:
-                pickle.dump(cache_factorial, file)
+            cache[number] = result
+            with open('cache.pkl', 'wb') as file:
+                pickle.dump(cache, file)
             return result
 
     return wrapper
@@ -63,15 +62,12 @@ class BasicCalc(metaclass=SingletonMeta):
     log = dict()
 
     @staticmethod
-    @cache_for_factorial
+    @cache
     def factorial(number):
         if number <= 1:
             return 1
         else:
             return number * BasicCalc.factorial(number - 1)
-
-    def factorial_from_math(self, number):
-        return factorial(number)
 
     def count_random_numbers(self):
         random_numbers = [randint(0, 50) for i in range(50)]

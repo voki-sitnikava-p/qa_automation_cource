@@ -1,4 +1,8 @@
-from calculator import BasicCalc, NewCalc, initialization_cache, timer
+from calculator import BasicCalc, NewCalc
+from calculator import initialization_cache
+from calculator import timer
+from math import factorial
+
 
 if __name__ == '__main__':
     calc1 = BasicCalc()
@@ -13,5 +17,5 @@ if __name__ == '__main__':
         result = calc1.factorial(600)
         print(result)
     with timer():  # Выполняем рассчет факториала с помощью math.factorial()
-        result = calc1.factorial_from_math(600)
+        result = factorial(600)
         print(result)
