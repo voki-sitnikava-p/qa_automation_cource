@@ -70,7 +70,7 @@ class BasicCalc:
 
 
     @staticmethod
-    def argument_checking(first_number, second_number):
+    def argument_checking(first_number, second_number, operation):
         if not isinstance(first_number, (int, float)):
             BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
             first_number = 0
