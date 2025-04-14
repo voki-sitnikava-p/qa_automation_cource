@@ -3,6 +3,10 @@ import pickle
 import time
 from contextlib import contextmanager
 import sys
+from math import factorial
+import datetime
+from random import randint
+from collections import Counter
 
 sys.setrecursionlimit(4000)
 
@@ -42,6 +46,7 @@ def cache_for_factorial(func):
     return wrapper
 
 class BasicCalc:
+
     log = dict()
 
     @cache_for_factorial
@@ -53,9 +58,19 @@ class BasicCalc:
         else:
             return number * BasicCalc.factorial(number - 1)
 
+    def factorial_from_math(number):
+        return factorial(number)
+
+    def count_random_numbers():
+        random_numbers = [randint(0, 50) for i in range(50)]
+        distribution_numbers = Counter(random_numbers)
+        print('Распределение для генерации случайных целых чисел:')
+        for num in sorted(distribution_numbers):
+            print(f'число {num}: {distribution_numbers[num]}')
+
 
     @staticmethod
-    def argument_checking(first_number, second_number, operation):
+    def argument_checking(first_number, second_number):
         if not isinstance(first_number, (int, float)):
             BasicCalc.log['first_number_Type_Error'] = 'Invalid format of first number. Number replaced with 0'
             first_number = 0
@@ -149,7 +164,8 @@ class BasicCalc:
 
     @staticmethod
     def log_information(first_number, operation, second_number, result):
-        BasicCalc.log.update({"first_argument": first_number, "second_argument": second_number, "operation": operation, "result": result})
+        BasicCalc.log.update({"first_argument": first_number, "second_argument": second_number, "operation": operation,
+                              "result": result, "date_log": str(datetime.datetime.now())})
         with open('log.txt', 'w') as file:
             file.write(str(BasicCalc.log))
         # with open('log.txt', 'wb') as file:
