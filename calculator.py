@@ -212,8 +212,7 @@ class NewCalc(BasicCalc):
             return list()
 
     @staticmethod
-    def memo_minus():
-        stack = NewCalc.memory()
+    def memo_minus(stack):
         return stack.pop()
 
     @staticmethod
@@ -221,7 +220,7 @@ class NewCalc(BasicCalc):
         stack = NewCalc.memory()
         if isinstance(result, (int, float)):
             if len(stack) == 3:
-                NewCalc.memo_minus()
+                NewCalc.memo_minus(stack)
                 stack.append(result)
             else:
                 stack.append(result)
