@@ -8,7 +8,7 @@ if __name__ == '__main__':
     calc1 = BasicCalc()
     calc2 = NewCalc()
     calc1.count_random_numbers()  # Проверка распределения для генерации случайных целых чисел
-    result = calc1.calculate_user_input()  # Выполнение NewCalc, проверка записи даты в лог
+    result = calc2.calculate_user_input()  # Выполнение NewCalc, проверка записи даты в лог
     print(result)
     with timer():
         for i in initialization_cache(200):  # Выполняем инициализацию изначальных значений для кэша факториалов
