@@ -117,7 +117,7 @@ class BasicCalc(metaclass=SingletonMeta):
     @staticmethod
     def subtraction_number(first_number, operation, second_number):
         first_number, second_number = BasicCalc.argument_checking(first_number, second_number, operation)
-        result = first_number - second_number
+        result = first_number + second_number
         BasicCalc.log_information(
             first_number, operation, second_number, result
         )
