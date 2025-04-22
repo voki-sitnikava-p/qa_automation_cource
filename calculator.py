@@ -62,6 +62,7 @@ class SingletonMeta(type):
 
 class BasicCalc(metaclass=SingletonMeta):
     log = dict()
+    log_file_path = 'log.txt'
 
     @staticmethod
     @cache
@@ -194,10 +195,8 @@ class BasicCalc(metaclass=SingletonMeta):
         BasicCalc.log.update({"first_argument": first_number, "second_argument": second_number,
                               "operation": operation, "result": result,
                               "date_log": str(datetime.datetime.now())})
-        with open('log.txt', 'w') as file:
+        with open(BasicCalc.log_file_path, 'w') as file:
             file.write(str(BasicCalc.log))
-        # with open('log.txt', 'wb') as file:
-        #     pickle.dump(BasicCalc.log, file)
 
 
 class NewCalc(BasicCalc):
