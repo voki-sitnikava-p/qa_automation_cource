@@ -200,11 +200,12 @@ class BasicCalc(metaclass=SingletonMeta):
 
 
 class NewCalc(BasicCalc):
+    memory_file = 'memory.txt'
 
     @staticmethod
     def memory():
         try:
-            with open('memory.txt', 'r') as file:
+            with open(NewCalc.memory_file, 'r') as file:
                 return file.read().split()
         except FileNotFoundError:
             BasicCalc.log['memory_error'] = 'FileNotFoundError'
@@ -224,7 +225,7 @@ class NewCalc(BasicCalc):
             else:
                 stack.append(result)
             str_stack = [str(num) for num in stack]
-            with open('memory.txt', 'w') as file:
+            with open(NewCalc.memory_file, 'w') as file:
                 file.write(' '.join(str_stack))
         else:
             print('The result cannot be written to file. Result must be a number.')
